@@ -4,4 +4,5 @@ namespace CineMate.View.IViews;
 
 public interface IGenreServiceView : IServiceView
 {
+    Task GetMovie();
 }

@@ -22,6 +22,22 @@ public class MovieService : IMovieService
 
     public async Task<Response<MovieResultDto>> CreateAsync(MovieCreationDto dto)
     {
+        var checkGenre = await unitOfWork.GenreRepository.GetByIdAsync(dto.GenreId);
+        if (checkGenre is null)
+            return new Response<MovieResultDto>()
+            {
+                StatusCode = 404,
+                Message = "This Genre is not found"
+            };
+
+        var checkDirector = await unitOfWork.GenreRepository.GetByIdAsync(dto.GenreId);
+        if (checkDirector is null)
+            return new Response<MovieResultDto>()
+            {
+                StatusCode = 404,
+                Message = "Director is not found"
+            };
+
         var mapped = mapper.Map<Movie>(dto);
         await unitOfWork.MovieRepository.CreateAsync(mapped);
         await unitOfWork.SaveAsync();
@@ -43,6 +59,22 @@ public class MovieService : IMovieService
             {
                 StatusCode = 404,
                 Message = "This Movie is not found"
+            };
+
+        var checkGenre = await unitOfWork.GenreRepository.GetByIdAsync(dto.GenreId);
+        if (checkGenre is null)
+            return new Response<MovieResultDto>()
+            {
+                StatusCode = 404,
+                Message = "This Genre is not found"
+            };
+
+        var checkDirector = await unitOfWork.GenreRepository.GetByIdAsync(dto.GenreId);
+        if (checkDirector is null)
+            return new Response<MovieResultDto>()
+            {
+                StatusCode = 404,
+                Message = "Director is not found"
             };
 
         var mapped = mapper.Map(dto, checkMovie);
@@ -101,11 +133,11 @@ public class MovieService : IMovieService
 
     public Response<IEnumerable<MovieResultDto>> GetAll()
     {
-        var checkMovies = unitOfWork.MovieRepository.GetAll();
+        var checkMovies = unitOfWork.MovieRepository.GetAll().AsEnumerable();
 
         List<MovieResultDto> result = new();
-        foreach (var Movie in checkMovies)
-            result.Add(mapper.Map<MovieResultDto>(Movie));
+        foreach (var movie in checkMovies)
+            result.Add(mapper.Map<MovieResultDto>(movie));
 
         return new Response<IEnumerable<MovieResultDto>>()
         {

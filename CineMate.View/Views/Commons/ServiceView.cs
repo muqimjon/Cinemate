@@ -57,7 +57,10 @@ public class ServiceView<TService, TCreation, TUpdate, TResult> : IServiceView
                 if (int.TryParse(Console.ReadLine(), out int enumIndex) && enumIndex >= 0 && enumIndex < names.Length)
                     property.SetValue(dto, Enum.Parse(property.PropertyType, names[enumIndex]));
                 else
+                {
                     Console.WriteLine("Invalid enum value.");
+                    property.SetValue(dto, Enum.Parse(property.PropertyType, names.LastOrDefault()!));
+                }
             }
         }
 
@@ -78,7 +81,7 @@ public class ServiceView<TService, TCreation, TUpdate, TResult> : IServiceView
         TUpdate dto = new();
 
         PropertyInfo[] old = typeof(TResult).GetProperties();
-        PropertyInfo[] properties = typeof(TCreation).GetProperties();
+        PropertyInfo[] properties = typeof(TUpdate).GetProperties();
         int count = 0;
 
         foreach (var property in properties)
@@ -108,7 +111,10 @@ public class ServiceView<TService, TCreation, TUpdate, TResult> : IServiceView
                 if (int.TryParse(Console.ReadLine(), out int enumIndex) && enumIndex >= 0 && enumIndex < names.Length)
                     property.SetValue(dto, Enum.Parse(property.PropertyType, names[enumIndex]));
                 else
+                {
                     Console.WriteLine("Invalid enum value.");
+                    property.SetValue(dto, Enum.Parse(property.PropertyType, names.LastOrDefault()!));
+                }
             }
         }
         var result = await service.UpdateAsync(dto);
@@ -153,14 +159,16 @@ public class ServiceView<TService, TCreation, TUpdate, TResult> : IServiceView
         var result = service.GetAll();
 
         if (result.StatusCode != 200)
-            foreach (var dto in result.Data)
+        {
+            Console.WriteLine(result.Message);
+            return;
+        }
+        foreach (var dto in result.Data)
             {
                 PropertyInfo[] properties = typeof(TResult).GetProperties();
                 foreach (var property in properties)
                     Console.Write($"{property.Name}: {property.GetValue(dto)} | ");
                 Console.WriteLine();
             }
-        else
-            Console.WriteLine(result.Message);
     }
 }

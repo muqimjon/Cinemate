@@ -2,10 +2,12 @@
 using CineMate.Data.IRepositories.Commons;
 using CineMate.Data.Repositories.Commons;
 using CineMate.Domain.Entities;
+using CineMate.Domain.Enums;
 using CineMate.Service.DTOs;
 using CineMate.Service.Helpers;
 using CineMate.Service.Interfaces.Users;
 using CineMate.Service.Mappers;
+using System.Numerics;
 
 namespace CineMate.Service.Services.Users;
 
@@ -22,8 +24,9 @@ public class UserService : IUserService
 
     public async Task<Response<UserResultDto>> CreateAsync(UserCreationDto dto)
     {
-        var check = await unitOfWork.UserRepository.GetByPhoneAsync(dto.Email);
-        if (check is not null)
+        var checkPhone = await unitOfWork.UserRepository.GetByPhoneAsync(dto.Phone);
+        var checkEmail = await unitOfWork.UserRepository.GetByEmailAsync(dto.Email);
+        if (checkPhone is not null || checkEmail is not null)
             return new Response<UserResultDto>()
             {
                 StatusCode = 403,
@@ -31,6 +34,9 @@ public class UserService : IUserService
             };
 
         var mapped = mapper.Map<User>(dto);
+        if (!unitOfWork.UserRepository.GetAll().Any())
+            mapped.Role = (UserRole)1;
+
         await unitOfWork.UserRepository.CreateAsync(mapped);
         await unitOfWork.SaveAsync();
         var result = mapper.Map<UserResultDto>(mapped);
@@ -109,7 +115,7 @@ public class UserService : IUserService
 
     public Response<IEnumerable<UserResultDto>> GetAll()
     {
-        var checkUsers = unitOfWork.UserRepository.GetAll();
+        var checkUsers = unitOfWork.UserRepository.GetAll().AsEnumerable();
 
         List<UserResultDto> result = new();
         foreach (var user in checkUsers)
@@ -156,6 +162,61 @@ public class UserService : IUserService
         var result = mapper.Map<UserResultDto>(checkUser);
 
         return new Response<UserResultDto>()
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = result
+        };
+    }
+
+    public async Task<Response<bool>> ChangeUserRoleAsync(long userId, int roleIndex)
+    {
+        var entity = await unitOfWork.UserRepository.GetByIdAsync(userId);
+        if (entity is null)
+            return new Response<bool>()
+            {
+                StatusCode = 404,
+                Message = "This User is not found"
+            };
+
+        if (Enum.GetNames(typeof(UserRole)).Length > roleIndex && 0 < roleIndex)
+            entity.Role = (UserRole)roleIndex;
+        else
+            return new Response<bool>()
+            {
+                StatusCode = 400,
+                Message = "Invalid value Enum"
+            };
+
+        unitOfWork.UserRepository.Update(entity);
+        await unitOfWork.SaveAsync();
+
+        return new Response<bool>()
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = true
+        };
+    }
+
+    public async Task<Response<UserResultDto>> ResetPasswordAsync(string email, string phone, string password)
+    {
+        var checkPhone = await unitOfWork.UserRepository.GetByPhoneAsync(phone);
+        var checkEmail = await unitOfWork.UserRepository.GetByEmailAsync(email);
+        if (checkPhone is null && checkEmail is null)
+            return new Response<UserResultDto>()
+            {
+                StatusCode = 404,
+                Message = "This User is not found"
+            };
+
+        var entity = checkEmail ?? checkPhone;
+        entity!.Password = password;
+        unitOfWork.UserRepository.Update(entity);
+        await unitOfWork.SaveAsync();
+        var result = mapper.Map<UserResultDto>(entity);
+
+        return new Response<UserResultDto>
         {
             StatusCode = 200,
             Message = "Success",

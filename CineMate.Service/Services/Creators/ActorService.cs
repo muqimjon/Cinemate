@@ -101,7 +101,7 @@ public class ActorService : IActorService
 
     public Response<IEnumerable<ActorResultDto>> GetAll()
     {
-        var checkActor = unitOfWork.ActorRepository.GetAll();
+        var checkActor = unitOfWork.ActorRepository.GetAll().AsEnumerable();
 
         List<ActorResultDto> result = new();
         foreach (var Actor in checkActor)

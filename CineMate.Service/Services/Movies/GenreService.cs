@@ -7,7 +7,7 @@ using CineMate.Service.Helpers;
 using CineMate.Service.Interfaces;
 using CineMate.Service.Mappers;
 
-namespace CineMate.Service.Services.ProductCategories;
+namespace CineMate.Service.Services.Movies;
 
 public class GenreService : IGenreService
 {
@@ -101,7 +101,7 @@ public class GenreService : IGenreService
 
     public Response<IEnumerable<GenreResultDto>> GetAll()
     {
-        var checkProductCategories = unitOfWork.GenreRepository.GetAll();
+        var checkProductCategories = unitOfWork.GenreRepository.GetAll().AsEnumerable();
 
         List<GenreResultDto> result = new();
         foreach (var Genre in checkProductCategories)

@@ -2,7 +2,6 @@
 
 namespace CineMate.View.IViews;
 
-public interface IMovieServiceView : IServiceView
+public interface IMovieActorServiceView : IServiceView
 {
-    void Top10();
 }

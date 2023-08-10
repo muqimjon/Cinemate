@@ -101,7 +101,7 @@ public class DirectorService : IDirectorService
 
     public Response<IEnumerable<DirectorResultDto>> GetAll()
     {
-        var checkDirector = unitOfWork.DirectorRepository.GetAll();
+        var checkDirector = unitOfWork.DirectorRepository.GetAll().AsEnumerable();
 
         List<DirectorResultDto> result = new();
         foreach (var Director in checkDirector)

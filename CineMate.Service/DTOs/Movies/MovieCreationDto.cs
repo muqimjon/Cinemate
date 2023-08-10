@@ -2,8 +2,9 @@
 
 public class MovieCreationDto
 {
-    public decimal Rating { get; set; }
-    public DateTime ReleaseDate { get; set; }
     public string Title { get; set; } = string.Empty;
+    public DateTime ReleaseDate { get; set; }
     public long DirectorId { get; set; }
+    public long GenreId { get; set; }
+    public long AddressId { get; set; }
 }

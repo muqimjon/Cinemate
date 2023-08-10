@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CineMate.Domain.Entities;
+using CineMate.Domain.Entities.Movies;
 using CineMate.Service.DTOs;
 
 namespace CineMate.Service.Mappers;
@@ -47,5 +48,10 @@ public class MappingProfile : Profile
         CreateMap<UserRating, UserRatingResultDto>();
         CreateMap<UserRatingUpdateDto, UserRating>();
         CreateMap<UserRatingCreationDto, UserRating>();
+
+        // MovieActor
+        CreateMap<MovieActor, MovieActorResultDto>();
+        CreateMap<MovieActorUpdateDto, MovieActor>();
+        CreateMap<MovieActorCreationDto, MovieActor>();
     }
 }

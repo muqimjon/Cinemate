@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
         MovieRepository = new MovieRepository(appDbContext);
         GenreRepository = new GenreRepository(appDbContext);
         AddressRepository = new AddressRepository(appDbContext);
+        MovieActorRepository = new MovieActorRepository(appDbContext);
         UserRatingRepository = new UserRatingRepository(appDbContext);
         DirectorRepository = new DirectorRepository(appDbContext);
         ActorRepository = new ActorRepository(appDbContext);
@@ -27,6 +28,7 @@ public class UnitOfWork : IUnitOfWork
     public IMovieRepository MovieRepository { get; }
     public IGenreRepository GenreRepository { get; }
     public IAddressRepository AddressRepository { get; }
+    public IMovieActorRepository MovieActorRepository { get; }
     public IUserRatingRepository UserRatingRepository { get; }
     public IDirectorRepository DirectorRepository { get; }
     public IActorRepository ActorRepository { get; }

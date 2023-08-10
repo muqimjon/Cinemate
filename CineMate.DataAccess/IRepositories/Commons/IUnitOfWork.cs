@@ -14,5 +14,6 @@ public interface IUnitOfWork : IDisposable
     IDirectorRepository DirectorRepository { get; }
     IUserRepository UserRepository { get; }
     IAddressRepository AddressRepository { get; }  
+    IMovieActorRepository MovieActorRepository { get; }
     Task SaveAsync();
 }

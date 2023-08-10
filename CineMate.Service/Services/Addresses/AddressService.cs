@@ -101,7 +101,7 @@ public class AddressService : IAddressService
 
     public Response<IEnumerable<AddressResultDto>> GetAll()
     {
-        var checkAddress = unitOfWork.AddressRepository.GetAll();
+        var checkAddress = unitOfWork.AddressRepository.GetAll().AsEnumerable();
 
         List<AddressResultDto> result = new();
         foreach (var Address in checkAddress)

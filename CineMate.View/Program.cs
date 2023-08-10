@@ -1,5 +1,4 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CineMate.View.IViews.Commons;
 using CineMate.View.Views.Commons;
 
 
@@ -15,8 +14,7 @@ await unitOfWork.UserRepository.CreateAsync(new User()
 await unitOfWork.SaveAsync();*/
 
 
+MainView mainView = new MainView();
+await mainView.Sign();
 
-IUnitOfView unitOfView = new UnitOfView();
 
-
-await unitOfView.UserServiceView.CreateAsync();

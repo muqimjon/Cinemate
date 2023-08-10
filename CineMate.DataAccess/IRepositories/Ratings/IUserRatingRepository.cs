@@ -5,4 +5,5 @@ namespace CineMate.Data.IRepositories.Ratings;
 
 public interface IUserRatingRepository : IRepository<UserRating>
 {
+    IQueryable<UserRating> GetByMovieId(long id);
 }

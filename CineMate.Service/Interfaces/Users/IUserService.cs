@@ -8,4 +8,5 @@ public interface IUserService : IServiceInterface<UserCreationDto, UserUpdateDto
 {
     Task<Response<UserResultDto>> GetByPhoneAsync(string phone);
     Task<Response<UserResultDto>> GetByEmailAsync(string email);
+    Task<Response<bool>> ChangeUserRoleAsync(long userId, int roleIndex);
 }
