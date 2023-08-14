@@ -16,9 +16,9 @@ public class UserRepository : Repository<User>, IUserRepository
 
     public async Task<User> GetByEmailAsync(string email)
         => await appDbContext.Users
-            .FirstOrDefaultAsync(x => x.Email.Equals(email)) ?? default!;
+            .FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower())) ?? default!;
 
     public async Task<User> GetByPhoneAsync(string phone)
         => await appDbContext.Users
-            .FirstOrDefaultAsync(x => x.Phone.Equals(phone)) ?? default!;
+            .FirstOrDefaultAsync(x => x.Phone.Trim().Equals(phone.Trim())) ?? default!;
 }

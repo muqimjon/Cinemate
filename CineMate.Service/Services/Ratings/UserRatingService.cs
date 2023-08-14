@@ -4,7 +4,7 @@ using CineMate.Data.Repositories.Commons;
 using CineMate.Domain.Entities;
 using CineMate.Service.DTOs;
 using CineMate.Service.Helpers;
-using CineMate.Service.Interfaces.Products;
+using CineMate.Service.Interfaces;
 using CineMate.Service.Mappers;
 
 namespace CineMate.Services.Ratings;
@@ -22,7 +22,7 @@ public class UserRatingService : IUserRatingService
 
     public async Task<Response<UserRatingResultDto>> CreateAsync(UserRatingCreationDto dto)
     {
-        var checkUser = await unitOfWork.UserRatingRepository.GetByIdAsync(dto.UserId);
+        var checkUser = await unitOfWork.UserRepository.GetByIdAsync(dto.UserId);
         if(checkUser is null)
             return new Response<UserRatingResultDto>()
             {
@@ -30,13 +30,15 @@ public class UserRatingService : IUserRatingService
                 Message = "This User is not found"
             };
 
-        var checkMovie = await unitOfWork.MovieRepository.GetByIdAsync(dto.UserId);
+        var checkMovie = await unitOfWork.MovieRepository.GetByIdAsync(dto.MovieId);
         if (checkMovie is null)
             return new Response<UserRatingResultDto>()
             {
                 StatusCode = 404,
                 Message = "This Movie is not found"
             };
+
+        dto.Rating = dto.Rating < 0 ? 0 : dto.Rating > 10 ? 10 : dto.Rating;
 
         var all = unitOfWork.UserRatingRepository.GetByMovieId(checkMovie.Id);
         var sum = all.Sum(x => x.Rating) + dto.Rating;

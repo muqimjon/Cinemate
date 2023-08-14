@@ -9,7 +9,7 @@ using CineMate.Service.Mappers;
 
 namespace CineMate.Service.Services.Movies;
 
-public class MovieService : IMovieService
+public class MovieService : IMovieService       
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
@@ -144,6 +144,28 @@ public class MovieService : IMovieService
             StatusCode = 200,
             Message = "Success",
             Data = result
+        };
+    }
+
+    public Response<IEnumerable<MovieResultDto>> GetByGenreIdAsync(long id)
+    {
+        var checkMovie = unitOfWork.MovieRepository.GetAll().AsEnumerable().Where(x => x.GenreId == id);
+        if(checkMovie is null)
+            return new Response<IEnumerable<MovieResultDto>>
+            {
+                StatusCode = 404,
+                Message = "This Movie is not found"
+            };
+
+        var results = new List<MovieResultDto>();
+        foreach(var movie in checkMovie)
+            results.Add(mapper.Map<MovieResultDto>(movie));
+
+        return new Response<IEnumerable<MovieResultDto>>
+        {
+            StatusCode = 200,
+            Message = "Success",
+            Data = results
         };
     }
 }

@@ -73,6 +73,8 @@ public class UserServiceView : ServiceView<UserService, UserCreationDto, UserUpd
         Console.Write("Password: ");
         if (dto.Password.Equals(Console.ReadLine()))
             return dto;
+
+        Console.WriteLine("Invalid password");
         return default!;
     }
 
@@ -132,7 +134,7 @@ public class UserServiceView : ServiceView<UserService, UserCreationDto, UserUpd
     {
         if(!role.Equals(UserRole.SuperAdmin))
         {
-            Console.WriteLine("Siz Bu huquqdan foydalana olmaysiz");
+            Console.WriteLine("You do not have this right");
             return;
         }
 
@@ -189,10 +191,22 @@ public class UserServiceView : ServiceView<UserService, UserCreationDto, UserUpd
 
         UserUpdateDto dto = new();
         PropertyInfo[] properties = typeof(UserUpdateDto).GetProperties();
+        PropertyInfo[] oldProperty = typeof(UserResultDto).GetProperties();
 
         foreach (var property in properties)
         {
-            Console.Write($"{property.Name}: {property.GetValue(old)}");
+            Console.Write($"{property.Name}: ");
+            foreach (var item in oldProperty)
+                if (item.Name.Equals(property.Name))
+                    Console.WriteLine(item.GetValue(old));
+
+            if (property.Name.Equals("Id"))
+            {
+                dto.Id = old.Id;
+                continue;
+            }
+            
+            Console.Write("New: ");
 
             if (property.PropertyType == typeof(long))
                 property.SetValue(dto, long.Parse(Console.ReadLine()!));

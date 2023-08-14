@@ -47,7 +47,7 @@ public class MainView
             "7. Addresses\n" +
             "8. UserRatings\n" +
             "9. ChangeUserRole\n" +
-            "0. Exit");
+            "0. LogOut");
 
         var menu = int.Parse(Console.ReadLine()!);
         switch (menu)
@@ -88,10 +88,8 @@ public class MainView
         await Crud(service);
     }
 
-
     private async Task UserMenu(UserResultDto user)
     {
-        user = default!;
         Console.WriteLine("---------- User ----------\n" +
             "1. Top10\n" +
             "2. AllFilms\n" +
@@ -99,7 +97,7 @@ public class MainView
             "4. MyInfo\n" +
             "5. EditInfo\n" +
             "6. AddRating\n" +
-            "0. Back");
+            "0. LogOut");
 
         var menu = int.Parse(Console.ReadLine()!);
         switch (menu)
@@ -116,7 +114,7 @@ public class MainView
                     return;
                 }
                 break;
-            case 6: await unitOfView.UserRatingServiceView.CreateAsync(); break;
+            case 6: await unitOfView.UserRatingServiceView.CreateAsync(user.Id); break;
             case 0: return;
         }
         await UserMenu(user);

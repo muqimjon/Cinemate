@@ -28,8 +28,11 @@ public class GenreServiceView : ServiceView<GenreService, GenreCreationDto, Genr
         PropertyInfo[] properties = typeof(GenreResultDto).GetProperties();
 
         foreach (var item in genres)
+        {
             foreach (var property in properties)
                 Console.Write($"{property.Name}: {property.GetValue(item)} | ");
+            Console.WriteLine();
+        }
 
         var id = long.Parse(Console.ReadLine()!);
         var checkGenre = await genreService.GetByIdAsync(id);
@@ -39,11 +42,22 @@ public class GenreServiceView : ServiceView<GenreService, GenreCreationDto, Genr
             return;
         }
 
-        var movies = checkGenres.Data;
+        IMovieService movieService = new MovieService();
+        var checkMovies = movieService.GetByGenreIdAsync(id);
+        if(checkMovies.StatusCode != 200)
+        {
+            Console.WriteLine("This Table is empty");
+            return;
+        }
+
+        var movies = checkMovies.Data;
         PropertyInfo[] propertiesMovie = typeof(MovieResultDto).GetProperties();
 
         foreach (var item in movies)
+        {
             foreach (var property in propertiesMovie)
                 Console.Write($"{property.Name}: {property.GetValue(item)} | ");
-    }
+            Console.WriteLine();
+        }
+    }   
 }

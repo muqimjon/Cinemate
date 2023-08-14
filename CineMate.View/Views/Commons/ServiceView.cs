@@ -1,4 +1,5 @@
-﻿using CineMate.Service.Interfaces.Commons;
+﻿using CineMate.Service.DTOs;
+using CineMate.Service.Interfaces.Commons;
 using CineMate.View.IViews.Commons;
 using System.Reflection;
 
@@ -70,23 +71,37 @@ public class ServiceView<TService, TCreation, TUpdate, TResult> : IServiceView
 
     public async Task UpdateAsync()
     {
-        var checkDto = await service.GetByIdAsync(long.Parse(Console.ReadLine()!));
+        var id = long.Parse(Console.ReadLine()!);
+        var checkDto = await service.GetByIdAsync(id);
+
         if (checkDto.StatusCode != 200)
         {
             Console.WriteLine("This Id is not found");
             return;
         }
 
-        TResult oldDto = checkDto.Data;
+        TResult old = checkDto.Data;
         TUpdate dto = new();
 
-        PropertyInfo[] old = typeof(TResult).GetProperties();
         PropertyInfo[] properties = typeof(TUpdate).GetProperties();
-        int count = 0;
+        PropertyInfo[] oldProperty = typeof(TResult).GetProperties();
 
         foreach (var property in properties)
         {
-            Console.Write($"{property.Name}: {old[count++].GetValue(oldDto)}");
+            Console.Write($"{property.Name}: ");
+            foreach (var item in oldProperty)
+                if (item.Name.Equals(property.Name))
+                    Console.WriteLine(item.GetValue(old));
+
+            if (property.Name.Equals("Id"))
+            {
+                foreach(var item in oldProperty)
+                    if(item.Name.Equals("Id"))
+                        property.SetValue(dto, item.GetValue(dto));
+                continue;
+            }
+
+            Console.Write("New: ");
 
             if (property.PropertyType == typeof(long))
                 property.SetValue(dto, long.Parse(Console.ReadLine()!));

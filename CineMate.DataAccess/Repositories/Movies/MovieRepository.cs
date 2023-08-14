@@ -8,6 +8,5 @@ public class MovieRepository : Repository<Movie>, IMovieRepository
 {
     public MovieRepository(AppDbContext appDbContext) : base(appDbContext)
     {
-        
     }
 }

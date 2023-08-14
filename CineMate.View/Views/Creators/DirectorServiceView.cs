@@ -9,6 +9,5 @@ public class DirectorServiceView : ServiceView<DirectorService, DirectorCreation
 {
     public DirectorServiceView(DirectorService directorService) : base(directorService)
     {
-        
     }
 }

@@ -24,12 +24,14 @@ public class MovieServiceView : ServiceView<MovieService, MovieCreationDto, Movi
             return;
         }
 
-        var movies = resultMovies.Data.ToList().OrderBy(m => m.Rating).Take(10);
+        var movies = resultMovies.Data.ToList().OrderByDescending(m => m.Rating).Take(10);
         PropertyInfo[] properties = typeof(MovieResultDto).GetProperties();
 
         foreach (var movie in movies)
+        {
             foreach (var property in properties)
                 Console.Write($"{property.Name}: {property.GetValue(movie)} | ");
-
+            Console.WriteLine();
+        }
     }
 }
